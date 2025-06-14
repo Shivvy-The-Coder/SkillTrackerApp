@@ -1,7 +1,7 @@
 import skillModel from "../models/skillModel.js";
 
 export const addSkill = async (req, res) => {
-  console.log("Add Skill Payload:", req.body);  // Log incoming data
+  console.log("🔐 userId from middleware:", req.userId);
   const { name, proficiency, hoursSpent } = req.body;
   try {
     const skill = await skillModel.create({

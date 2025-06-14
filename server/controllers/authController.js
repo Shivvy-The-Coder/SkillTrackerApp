@@ -85,7 +85,7 @@ export const login = async(req, res)=>{
                 samesite:'None',//?in local backedn and frontend runs on same enviroment so it willbe true , but wne live server we will run on differnt servers
                 maxAge:7*24*60*60*1000 //7days in millisecond this is the xpiry time for cookie
                 });
-                
+                console.log(secure);
                 return res.json({success:true})
             }
             catch(err)
