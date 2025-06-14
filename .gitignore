@@ -1,0 +1,6 @@
+server/.env
+server/node_modules/
+
+# For frontend (optional)
+client/.env
+client/node_modules/
