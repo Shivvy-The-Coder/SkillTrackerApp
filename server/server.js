@@ -12,7 +12,9 @@ const port = process.env.PORT || 4000;
 
 connectDB();
 
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5173',
+    'https://skilltrackerapp-u627.onrender.com"'
+];
 
 app.use(express.json());
 app.use(cookieParser());
