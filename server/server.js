@@ -12,14 +12,21 @@ const app = express();
 const port = process.env.port || 4000;
 connectDB();
 
-const allowedOrigins =['http://localhost:5173']
-axios.defaults.withCredentials = true;
 
+axios.defaults.withCredentials = true;
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://skilltrackerapp-u627.onrender.com'
+];
 
 app.use(express.json()) //all the request will be passd through json 
 app.use(cookieParser());
-app.use(cors({ origin:allowedOrigins,credentials:true})) //credentials true so that we can send cookies in the response from the express app
 
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 // API EndPoints
 app.get("/",(req,res)=>{res.send("API Working");})
