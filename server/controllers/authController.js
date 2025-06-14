@@ -32,14 +32,12 @@ export const register = async (req,res)=>{
             const token = jwt.sign({id:user._id}, process.env.JWT_SECRET , {expiresIn:'7d'});
             // this token for 7 days authentication has beenc reated and ow we will send this token using reaponse and in reposne we will add the cookie
             
-            res.cookie('token', token, {
-                    
-                httpOnly : true , // therefore this will run only http
-                secure :true,
-                samesite:'None',
-                maxAge:7*24*60*60*1000 //7days in millisecond this is the xpiry time for cookie
-            });
-            // sending welcome email
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,           // ✅ Must be true on HTTPS (Render)
+                sameSite: "None",       // ✅ Must be None for cross-site
+                });
+                            // sending welcome email
             try{
                 const mailOptions ={
                 from:process.env.SENDER_EMAIL,
