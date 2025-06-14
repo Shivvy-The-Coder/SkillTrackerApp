@@ -10,21 +10,22 @@ export const AppContextProvider = (props)=>{
 
     // url of our backedn server
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    console.log(backendUrl);
     const [isLoggedin , setIsLoggedin] = useState(false)
-    const [userData , setUserData] = useState(false)
+    const [userData , setUserData] = useState(null)
 
     const getAuthState = async () => {
         try {
-                const { data } = await axios.post(backendUrl + '/api/auth/is-auth');
+                const { data } = await axios.post(`${backendUrl}/api/auth/is-auth`);
                 if (data.success) {
                 setIsLoggedin(true);
                 getUserData();
                 } else {
+                setIsLoggedin(false);
                 toast.error(data.message);
                 }
             } catch (error) {
-                toast.error(error.message);
+                setIsLoggedin(false);
+                toast.error(error.response?.data?.message || error.message);
             }
             };
 
@@ -32,12 +33,12 @@ export const AppContextProvider = (props)=>{
     const getUserData = async ()=>{
         try
         {
-            const {data} = await axios.get(backendUrl + '/api/user/data');
+            const { data } = await axios.get(`${backendUrl}/api/user/data`);
             data.success?setUserData(data.userData) : toast.error(data.message)
         }
         catch(error)
             {
-                toast.error(error.message)
+                toast.error(error.response?.data?.message || error.message);
             }
     }
 

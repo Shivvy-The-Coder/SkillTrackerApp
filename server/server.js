@@ -13,6 +13,8 @@ const port = process.env.port || 4000;
 connectDB();
 
 const allowedOrigins =['http://localhost:5173']
+axios.defaults.withCredentials = true;
+
 
 app.use(express.json()) //all the request will be passd through json 
 app.use(cookieParser());
