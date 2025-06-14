@@ -8,4 +8,10 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  proxy: {
+    '/api': {
+      target: 'https://skilltrackerapp-u627.onrender.com',
+      changeOrigin: true,
+      secure: true,
+    }},
 })

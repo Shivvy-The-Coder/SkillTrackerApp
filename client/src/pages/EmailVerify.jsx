@@ -1,4 +1,86 @@
-import React, { useContext, useEffect } from 'react'
+// import React, { useContext, useEffect } from 'react'
+// import { assets } from '../assets/assets';
+// import { AppContext } from '../context/AppContext';
+// import axios from 'axios';
+// import { toast } from 'react-toastify';
+// import { useNavigate } from 'react-router-dom';
+
+// const EmailVerify = () => {
+
+//   const {backendUrl , isLoggedIn , userData , getUserData}= useContext(AppContext);
+//   axios.defaults.withCredentials =true;
+// const inputRefs = React.useRef([])
+// const handleInput = (e,index)=>{
+//     if(e.target.value.length >0 && index <inputRefs.current.length-1)
+//         inputRefs.current[index+1].focus();
+//   }
+
+//   const handleKeydown= (e,index)=>{
+//     if(e.key === 'Backspace' && e.target.value === '' & index>0)
+//     {
+//       inputRefs.current[index-1].focus();
+//     }
+//   }
+// const navigate =useNavigate();
+//   const onSubmitHandler = async (e)=>{
+//     try {
+//       e.preventDefault();
+//       const otpArray = inputRefs.current.map(e=>e.value)
+//       const otp=otpArray.join('')
+
+//       const {data}= await axios.post(backendUrl+"/api/auth/verify-account", {otp})
+//       if(data.success)
+//         {  toast.success(data.message);
+//         getUserData()
+//         navigate('/')
+//         }
+//       else
+//         {
+//           toast.error(data.message);
+//         }
+//     } catch (error)
+//      {
+//         toast.error(error.message);
+//     }
+//   }
+
+
+//   useEffect(()=>{
+//     isLoggedIn && userData && userData.isAccountVerified && navigate("/")
+//   }, [isLoggedIn, userData, navigate])
+//   return (
+          
+//     <div className='flex items-center  justify-center min-h-screen  bg-linear-to-bl from-violet-500 to-fuchsia-500'>
+//           <img 
+//                         src={assets.logo} alt="" 
+//                        className='absolute left-5 sm:left-20 top-5 w-15 sm:w-15 cursor-pointer'/>
+//                        <form  onSubmit={onSubmitHandler}
+//                               className='bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm'>
+//                         <h1 className='text-white text-2xl font-semibold text-center mb-4'>Email Verify OTP</h1>
+//                         <p className='text-center mb-6 text-indigo-300'>Enter the 6-digit code sent to your Email id</p>
+//                         <div className='flex justify-between mb-8'>
+//                               {Array(6).fill(0).map((_,index)=>(
+//                                 <input type="text" maxLength={1} key={index}  required
+//                                   className="w-12 h-12 bg-[#333A5C] text-white text-center text-xl rounded-md"
+//                                   ref={e=>inputRefs.current[index] = e}
+//                                   onInput={(e)=>handleInput(e,index)}
+//                                   onKeyDown={(e)=>handleKeydown(e,index)}
+//                                   />
+                                
+//                               ))}
+                      
+//                         </div>
+//                               <button className='w-full py-4  bg-gradient-to-bl from-violet-500 to-indigo-900 text-white rounded-full'>Verify Email</button>
+//                        </form>
+//     </div>
+
+//   )
+// }
+
+// export default EmailVerify;
+
+
+import React, { useContext, useEffect, useRef } from 'react';
 import { assets } from '../assets/assets';
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
@@ -6,75 +88,95 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 const EmailVerify = () => {
+  const { isLoggedIn, userData, getUserData } = useContext(AppContext);
+  const navigate = useNavigate();
 
-  const {backendUrl , isLoggedIn , userData , getUserData}= useContext(AppContext);
-  axios.defaults.withCredentials =true;
-const inputRefs = React.useRef([])
-const handleInput = (e,index)=>{
-    if(e.target.value.length >0 && index <inputRefs.current.length-1)
-        inputRefs.current[index+1].focus();
-  }
+  const inputRefs = useRef([]);
 
-  const handleKeydown= (e,index)=>{
-    if(e.key === 'Backspace' && e.target.value === '' & index>0)
-    {
-      inputRefs.current[index-1].focus();
+  const handleInput = (e, index) => {
+    if (e.target.value.length > 0 && index < inputRefs.current.length - 1) {
+      inputRefs.current[index + 1].focus();
     }
-  }
-const navigate =useNavigate();
-  const onSubmitHandler = async (e)=>{
+  };
+
+  const handleKeydown = (e, index) => {
+    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+  };
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
-      const otpArray = inputRefs.current.map(e=>e.value)
-      const otp=otpArray.join('')
+      const otpArray = inputRefs.current.map((input) => input.value);
+      const otp = otpArray.join('');
 
-      const {data}= await axios.post(backendUrl+"/api/auth/verify-account", {otp})
-      if(data.success)
-        {  toast.success(data.message);
-        getUserData()
-        navigate('/')
-        }
-      else
-        {
-          toast.error(data.message);
-        }
-    } catch (error)
-     {
-        toast.error(error.message);
+      const { data } = await axios.post('/api/auth/verify-account', { otp });
+
+      if (data.success) {
+        toast.success(data.message);
+        await getUserData();
+        navigate('/');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
     }
-  }
+  };
 
+  useEffect(() => {
+    if (isLoggedIn && userData?.isAccountVerified) {
+      navigate('/');
+    }
+  }, [isLoggedIn, userData, navigate]);
 
-  useEffect(()=>{
-    isLoggedIn && userData && userData.isAccountVerified && navigate("/")
-  }, [isLoggedIn, userData, navigate])
   return (
-          
-    <div className='flex items-center  justify-center min-h-screen  bg-linear-to-bl from-violet-500 to-fuchsia-500'>
-          <img 
-                        src={assets.logo} alt="" 
-                       className='absolute left-5 sm:left-20 top-5 w-15 sm:w-15 cursor-pointer'/>
-                       <form  onSubmit={onSubmitHandler}
-                              className='bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm'>
-                        <h1 className='text-white text-2xl font-semibold text-center mb-4'>Email Verify OTP</h1>
-                        <p className='text-center mb-6 text-indigo-300'>Enter the 6-digit code sent to your Email id</p>
-                        <div className='flex justify-between mb-8'>
-                              {Array(6).fill(0).map((_,index)=>(
-                                <input type="text" maxLength={1} key={index}  required
-                                  className="w-12 h-12 bg-[#333A5C] text-white text-center text-xl rounded-md"
-                                  ref={e=>inputRefs.current[index] = e}
-                                  onInput={(e)=>handleInput(e,index)}
-                                  onKeyDown={(e)=>handleKeydown(e,index)}
-                                  />
-                                
-                              ))}
-                      
-                        </div>
-                              <button className='w-full py-4  bg-gradient-to-bl from-violet-500 to-indigo-900 text-white rounded-full'>Verify Email</button>
-                       </form>
-    </div>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-bl from-violet-500 to-fuchsia-500 relative">
+      {/* Logo */}
+      <img
+        src={assets.logo}
+        alt="logo"
+        onClick={() => navigate('/')}
+        className="absolute left-5 sm:left-20 top-5 w-15 sm:w-15 cursor-pointer"
+      />
 
-  )
-}
+      {/* OTP Form */}
+      <form
+        onSubmit={onSubmitHandler}
+        className="bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm"
+      >
+        <h1 className="text-white text-2xl font-semibold text-center mb-4">Email Verify OTP</h1>
+        <p className="text-center mb-6 text-indigo-300">
+          Enter the 6-digit code sent to your Email id
+        </p>
+
+        <div className="flex justify-between mb-8">
+          {Array(6)
+            .fill(0)
+            .map((_, index) => (
+              <input
+                key={index}
+                type="text"
+                maxLength={1}
+                required
+                ref={(el) => (inputRefs.current[index] = el)}
+                onInput={(e) => handleInput(e, index)}
+                onKeyDown={(e) => handleKeydown(e, index)}
+                className="w-12 h-12 bg-[#333A5C] text-white text-center text-xl rounded-md"
+              />
+            ))}
+        </div>
+
+        <button
+          type="submit"
+          className="w-full py-4 bg-gradient-to-bl from-violet-500 to-indigo-900 text-white rounded-full"
+        >
+          Verify Email
+        </button>
+      </form>
+    </div>
+  );
+};
 
 export default EmailVerify;
