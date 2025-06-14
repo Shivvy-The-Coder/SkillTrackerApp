@@ -82,7 +82,7 @@ export const login = async(req, res)=>{
                 res.cookie('token', token, {                   
                 httpOnly : true , // therefore this will run only http
                 secure :process.env.NODE_ENV==='production',//?whenever  we will run this live server then it should run on https then it ill be true , and if runn locally then it should be dalse 
-                samesite:process.env.NODE_ENV==='production'?'none':'strict',//?in local backedn and frontend runs on same enviroment so it willbe true , but wne live server we will run on differnt servers
+                samesite:'None',//?in local backedn and frontend runs on same enviroment so it willbe true , but wne live server we will run on differnt servers
                 maxAge:7*24*60*60*1000 //7days in millisecond this is the xpiry time for cookie
                 });
                 
