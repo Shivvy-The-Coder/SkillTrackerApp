@@ -77,7 +77,7 @@ const Resetpassword = () => {
     <div className='flex items-center  justify-center min-h-screen  bg-linear-to-bl from-violet-500 to-fuchsia-500'>
       <img 
                               onClick={()=>{navigate('/')}}
-                              src={assets.logo} alt="" 
+                              src={assets.Logo} alt="" 
                              className='absolute left-5 sm:left-20 top-5 w-15 sm:w-15 cursor-pointer'/>
         
 {/* enter the mail id */}

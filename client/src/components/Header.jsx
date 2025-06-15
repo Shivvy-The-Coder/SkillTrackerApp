@@ -7,7 +7,6 @@ const Header = () => {
 
   const navigate = useNavigate();
   const {userData} = useContext(AppContext);
-  console.log(userData);
 
   const handleGetStarted = () => {
     navigate('/dashboard');
