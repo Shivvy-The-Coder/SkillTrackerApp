@@ -6,9 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const { backendUrl, userData, getUserData } = useContext(AppContext);
-
-  // States80
-  const [bio, setBio] = useState('');8051
+  const [bio, setBio] = useState('');
   const [goals, setGoals] = useState('');
   const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
   const [skills, setSkills] = useState([]);
@@ -438,7 +436,7 @@ const Dashboard = () => {
                           // View Mode
                           <div className="flex items-center justify-between">
                             <div className="flex-grow">
-                              <div className="flex items-center space-x-4">
+                              <div className="flex items-center justify-between flex-wrap sm:flex-nowrap">
                                 <div className="flex-shrink-0">
                                   {/* Skill Icon Space */}
                                   <div className="w-14 h-14 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -460,16 +458,16 @@ const Dashboard = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className="flex items-center space-x-3">
+                            <div className="flex items-center space-x-3 pt-4">
                               <button
                                 onClick={() => startEditingSkill(skill)}
-                                className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 text-purple-300 hover:text-purple-200 px-4 py-2 rounded-lg text-sm font-medium border border-purple-500/30 transition-all duration-300"
+                                className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 text-purple-300 hover:text-purple-200 px-1 sm:px-4 py-0.5 sm:py-2 rounded-lg text-sm font-medium border border-purple-500/30 transition-all duration-300"
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => deleteSkill(skill._id)}
-                                className="bg-gradient-to-r from-red-500/20 to-rose-500/20 hover:from-red-500/30 hover:to-rose-500/30 text-red-300 hover:text-red-200 px-4 py-2 rounded-lg text-sm font-medium border border-red-500/30 transition-all duration-300"
+                                className="bg-gradient-to-r from-red-500/20 to-rose-500/20 hover:from-red-500/30 hover:to-rose-500/30 text-red-300 hover:text-red-200 px-1 sm:px-4 py-0.5 sm:py-2 rounded-lg text-sm font-medium border border-red-500/30 transition-all duration-300"
                               >
                                 Delete
                               </button>
