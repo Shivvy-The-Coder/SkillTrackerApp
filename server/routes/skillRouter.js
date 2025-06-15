@@ -6,6 +6,6 @@ const skillRouter = express.Router();
 
 skillRouter.post('/add', userAuth, addSkill);
 skillRouter.put('/update', userAuth, updateSkill);
-skillRouter.delete('/delete', userAuth, deleteSkill);
+skillRouter.delete('/delete/:id', userAuth, deleteSkill);
 
 export default skillRouter;

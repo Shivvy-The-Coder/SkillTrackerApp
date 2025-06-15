@@ -8,10 +8,8 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
-  proxy: {
-    '/api': {
-      target: 'https://skilltrackerapp-u627.onrender.com',
-      changeOrigin: true,
-      secure: true,
-    }},
+  animation: {
+        'spin-slow': 'spin 8s linear infinite',
+        'spin-slower': 'spin 15s linear infinite',
+      },
 })

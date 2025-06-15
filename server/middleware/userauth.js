@@ -12,7 +12,7 @@ const userAuth = async (req, res, next) => {
     const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
 
     if (tokenDecode && tokenDecode.id) {
-      req.userId = tokenDecode.id; // Keep variable name as requested
+      req.userId = tokenDecode.id; 
       next();
     } else {
       return res.status(401).json({ success: false, message: "Token verification failed." });

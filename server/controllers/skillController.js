@@ -1,7 +1,7 @@
 import skillModel from "../models/skillModel.js";
 
 export const addSkill = async (req, res) => {
-  console.log("🔐 userId from middleware:", req.userId);
+  console.log("Add Skill Payload:", req.body);  // Log incoming data
   const { name, proficiency, hoursSpent } = req.body;
   try {
     const skill = await skillModel.create({
@@ -39,7 +39,7 @@ export const updateSkill = async (req, res) => {
 
 
 export const deleteSkill = async (req, res) => {
-  const { skillId } = req.body;
+  const skillId  = req.params.id;
   try {
     await skillModel.findOneAndDelete({ _id: skillId, userId: req.userId });
     return res.json({ success: true, message: "Skill deleted" });

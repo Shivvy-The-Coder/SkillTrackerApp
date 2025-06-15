@@ -1,3 +1,5 @@
+// in this we will cerate differnt controller functions like register , login , logout etc
+
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 import userModel from "../models/userModel.js";
@@ -30,13 +32,14 @@ export const register = async (req,res)=>{
             const token = jwt.sign({id:user._id}, process.env.JWT_SECRET , {expiresIn:'7d'});
             // this token for 7 days authentication has beenc reated and ow we will send this token using reaponse and in reposne we will add the cookie
             
-            res.cookie("token", token, {
-                httpOnly: true,
-                secure: true,           // ✅ Must be true on HTTPS (Render)
-                sameSite: "None",  
-                maxAge: 7 * 24 * 60 * 60 * 1000,     // ✅ Must be None for cross-site
-                });
-                            // sending welcome email
+            res.cookie('token', token, {
+                    
+                httpOnly : true , // therefore this will run only http
+                secure :process.env.NODE_ENV==='production',//?whenever  we will run this live server then it should run on https then it ill be true , and if runn locally then it should be dalse 
+                samesite:process.env.NODE_ENV==='production'?'none':'strict',//?in local backedn and frontend runs on same enviroment so it willbe true , but wne live server we will run on differnt servers
+                maxAge:7*24*60*60*1000 //7days in millisecond this is the xpiry time for cookie
+            });
+            // sending welcome email
             try{
                 const mailOptions ={
                 from:process.env.SENDER_EMAIL,
@@ -78,10 +81,11 @@ export const login = async(req, res)=>{
                 const token = jwt.sign({id:user._id} , process.env.JWT_SECRET , {expiresIn : '7d'});
                 res.cookie('token', token, {                   
                 httpOnly : true , // therefore this will run only http
-                secure :true,
-                samesite:'None',
+                secure :process.env.NODE_ENV==='production',//?whenever  we will run this live server then it should run on https then it ill be true , and if runn locally then it should be dalse 
+                samesite:process.env.NODE_ENV==='production'?'none':'strict',//?in local backedn and frontend runs on same enviroment so it willbe true , but wne live server we will run on differnt servers
                 maxAge:7*24*60*60*1000 //7days in millisecond this is the xpiry time for cookie
-            });
+                });
+                
                 return res.json({success:true})
             }
             catch(err)
@@ -95,12 +99,11 @@ export const logout =async (req,res)=>{
     try
         {
             //herer we have to clear the cookie form the response 
-                        res.clearCookie("token", {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "None",
-                    });
-
+            res.clearCookie('token',{
+                httpOnly : true , // therefore this will run only http
+                secure :process.env.NODE_ENV==='production',//?whenever  we will run this live server then it should run on https then it ill be true , and if runn locally then it should be dalse 
+                samesite:process.env.NODE_ENV==='production'?'none':'strict',//?in local backedn and frontend runs on same enviroment so it willbe true , but wne live server we will run on differnt servers
+            })
             return res.json({success:true , message:'Logged out'})
         }
     catch(err)
