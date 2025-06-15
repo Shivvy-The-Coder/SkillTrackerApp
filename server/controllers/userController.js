@@ -5,7 +5,7 @@ import personalInfoModel from "../models/personalInfoModel.js"; // renamed impor
 // Get basic user data
 export const getUserData = async (req, res) => {
   try {
-    const userId = req.userId; 
+    const userId = req.userId; // ✅ extracted from JWT
     console.log("userId in getUserData:", userId);
 
     const user = await userModel.findById(userId);
