@@ -59,8 +59,8 @@ const Login = () => {
       {/* Logo */}
       <img
         onClick={() => navigate('/')}
-        src={assets.logo}
-        alt="logo"
+        src={assets.Logo}
+        alt="log"
         className="absolute left-5 sm:left-20 top-5 w-15 sm:w-15 cursor-pointer z-10"
       />
 
