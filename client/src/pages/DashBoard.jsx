@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const { backendUrl, userData, getUserData } = useContext(AppContext);
 
-  // States
-  const [bio, setBio] = useState('');
+  // States80
+  const [bio, setBio] = useState('');8051
   const [goals, setGoals] = useState('');
   const [showPersonalInfoForm, setShowPersonalInfoForm] = useState(false);
   const [skills, setSkills] = useState([]);
