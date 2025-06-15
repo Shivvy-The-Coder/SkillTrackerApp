@@ -458,7 +458,7 @@ const Dashboard = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className="flex items-center space-x-3 pt-4">
+                            <div className="flex items-center space-x-3 pt-4 flex-wrap sm:flex-nowrap">
                               <button
                                 onClick={() => startEditingSkill(skill)}
                                 className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 text-purple-300 hover:text-purple-200 px-1 sm:px-4 py-0.5 sm:py-2 rounded-lg text-sm font-medium border border-purple-500/30 transition-all duration-300"
