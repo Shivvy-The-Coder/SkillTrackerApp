@@ -1,9 +1,11 @@
 import userModel from "../models/userModel.js";
 import skillModel from "../models/skillModel.js";
 import personalInfoModel from "../models/personalInfoModel.js"; // renamed import below for consistency
+
+// Get basic user data
 export const getUserData = async (req, res) => {
   try {
-    const userId = req.userId; // ✅ extracted from JWT
+    const userId = req.userId; 
     console.log("userId in getUserData:", userId);
 
     const user = await userModel.findById(userId);
