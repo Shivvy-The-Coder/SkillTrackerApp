@@ -267,7 +267,7 @@ const Dashboard = () => {
                 {/* Profile Image Section */}
                 <div className="flex items-center mb-6">
                   <div className="relative mr-4">
-                    <div className="w-20 h-20 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-xl">
+                    <div className="h-15 w-15 sm:w-20 sm:h-20 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-xl">
                       <span className="text-white text-2xl font-bold">
                         {userData?.name?.charAt(0) || 'U'}
                       </span>
