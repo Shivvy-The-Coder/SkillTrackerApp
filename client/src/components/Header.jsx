@@ -4,7 +4,7 @@ import { AppContext } from '../context/AppContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const { isLoggedin, user, setIsLoggedin } = useContext(AppContext);
+  const { isLoggedin } = useContext(AppContext);
   const navigate = useNavigate();
   const { userData } = useContext(AppContext);
 
