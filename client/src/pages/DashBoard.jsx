@@ -274,7 +274,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-white">{userData?.name || 'User'}</h4>
+                    <h4 className="text-sm sm:text-xl font-bold text-white">{userData?.name || 'User'}</h4>
                     <p className="text-slate-400">{userData?.email || 'user@example.com'}</p>
                   </div>
                 </div>
