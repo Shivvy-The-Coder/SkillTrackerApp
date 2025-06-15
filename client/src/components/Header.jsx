@@ -4,6 +4,7 @@ import { AppContext } from '../context/AppContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const { isLoggedin, user, setIsLoggedin } = useContext(AppContext);
   const navigate = useNavigate();
   const { userData } = useContext(AppContext);
 
@@ -32,12 +33,14 @@ const Header = () => {
         Welcome to SkillTracker! Track, improve, and master your personal skills one step at a time.
       </p>
 
-      <button
+      {
+        isLoggedin?(<button
         onClick={handleGetStarted}
         className="border border-gray-500 rounded-full px-8 py-2.5 text-gray-400 hover:bg-gray-100 hover:text-black transition duration-200"
       >
         Get Started
-      </button>
+      </button>):('')
+      }
     </div>
   );
 };
