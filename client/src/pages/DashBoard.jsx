@@ -439,7 +439,7 @@ const Dashboard = () => {
                               <div className="flex items-center justify-between flex-wrap sm:flex-nowrap">
                                 <div className="flex-shrink-0">
                                   {/* Skill Icon Space */}
-                                  <div className="w-14 h-14 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                                  <div className="w-8 h-8 sm:w-14 sm:h-14 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
                                     <span className="text-white font-bold text-lg">
                                       {skill.name.charAt(0).toUpperCase()}
                                     </span>
