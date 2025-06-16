@@ -12,19 +12,19 @@ const app = express();
 const port = process.env.port || 4000;
 connectDB();
 
-const allowedOrigins =['https://skilltrackerapp-1.onrender.com']
+const allowedOrigins =['https://skilltrackerapp-1.onrender.com','http://localhost:5173/']
 
 app.use(express.json()) //all the request will be passd through json 
 app.use(cookieParser());
-app.use(cors({ origin:allowedOrigins,credentials:true})) //credentials true so that we can send cookies in the response from the express app
-
+//credentials true so that we can send the response from the backedn app
+app.use(cors({ origin:allowedOrigins,credentials:true})) 
 
 // API EndPoints
 app.get("/",(req,res)=>{res.send("API Working");})
 app.use("/api/auth", authRouter)
 app.use("/api/user", userRouter)
 app.use("/api/skill", skillRouter)
-app.listen(port , (req,res)=>
+app.listen(port , ()=>
 {
     console.log(`Application is running on Port ${port}`);
 })

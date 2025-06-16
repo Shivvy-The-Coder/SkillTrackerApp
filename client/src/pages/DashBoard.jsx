@@ -3,6 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AppContext } from '../context/AppContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import { FaStopwatch20 } from "react-icons/fa";
 
 const Dashboard = () => {
   const { backendUrl, userData, getUserData } = useContext(AppContext);
@@ -178,6 +179,7 @@ const Dashboard = () => {
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
                     <span className="text-white text-lg">📚</span>
+                    <FaStopwatch20 />
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
