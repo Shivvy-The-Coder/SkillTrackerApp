@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaStopwatch20 } from "react-icons/fa";
 import { HiMiniTrophy } from "react-icons/hi2";
 import { IoStatsChartSharp } from "react-icons/io5";
+import { FaCircleArrowLeft } from "react-icons/fa6";
 
 const Dashboard = () => {
   const { backendUrl, userData, getUserData } = useContext(AppContext);
@@ -163,7 +164,7 @@ const Dashboard = () => {
             <div className=" md:flex items-center space-x-4">
               <div className="w-10 h-10 bg-slate-700/50 backdrop-blur rounded-lg flex items-center justify-center hover:bg-slate-600/50 transition-colors cursor-pointer"
                   onClick={() => navigate('/')}>
-                <span className="text-slate-300">⬅️</span>
+                 <FaCircleArrowLeft className='text-2xl text-white text-shadow-md text-shadow-amber-300'/>
               </div>
             </div>
           </div>
