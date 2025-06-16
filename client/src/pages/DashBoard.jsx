@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import { AppContext } from '../context/AppContext.jsx';
 import { useNavigate } from 'react-router-dom';
 import { FaStopwatch20 } from "react-icons/fa";
+import { HiMiniTrophy } from "react-icons/hi2";
+import { IoStatsChartSharp } from "react-icons/io5";
 
 const Dashboard = () => {
   const { backendUrl, userData, getUserData } = useContext(AppContext);
@@ -178,8 +180,7 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-lg">📚</span>
-                    <FaStopwatch20 />
+                    <FaStopwatch20 className='text-2xl text-white text-shadow-md text-shadow-amber-300'/>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
@@ -197,7 +198,7 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-lg">⏱️</span>
+                    <FaStopwatch20 className='text-2xl text-white text-shadow-md text-shadow-amber-300'/>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
@@ -215,7 +216,7 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-violet-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-lg">📊</span>
+                    <IoStatsChartSharp className='text-2xl text-white text-shadow-md text-shadow-amber-300'/>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
@@ -233,7 +234,7 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-rose-500 rounded-xl flex items-center justify-center shadow-lg">
-                    <span className="text-white text-lg">🏆</span>
+                    <HiMiniTrophy className='text-2xl text-white text-shadow-md text-shadow-amber-300'/>
                   </div>
                 </div>
                 <div className="ml-5 w-0 flex-1">
