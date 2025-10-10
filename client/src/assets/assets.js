@@ -4,7 +4,6 @@ import hand_wave from "./hand_wave.png"
 import Logo from "./Logo.png"
 import person_icon from "./person_icon.svg"
 import mail_icon from "./mail_icon.svg"
-// import logo1 from "./logo.svg"
 import header from "./header.png"
 export const assets = {
     arrow_icon,
