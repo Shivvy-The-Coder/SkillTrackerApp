@@ -21,87 +21,131 @@ const Dashboard = () => {
    const navigate = useNavigate();
   // API calls
   const fetchData = async () => {
-    try {
-      const { data } = await axios.get(`${backendUrl}/api/user/data`);
-      if (data.success) {
-        setBio(data.userData.bio || '');
-        setGoals(data.userData.goals || '');
-        setSkills(data.userData.skills || []);
-      } else {
-        toast.error(data.message);
+  const token = localStorage.getItem("token");  // <-- always fetch from localStorage
+  if (!token) return toast.error("You are not logged in");
+
+  try {
+    const { data } = await axios.get(`${backendUrl}/api/user/data`, {
+      headers: {
+        Authorization: `Bearer ${token}`,  // <-- pass token here
+      },
+    });
+
+    if (data.success) {
+      setBio(data.userData.bio || '');
+      setGoals(data.userData.goals || '');
+      setSkills(data.userData.skills || []);
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    toast.error('Error fetching data: ' + error.message);
+  }
+};
+
+
+ const updatePersonalInfo = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) return toast.error("You are not logged in");
+
+  try {
+    const { data } = await axios.put(
+      `${backendUrl}/api/user/personal-info`,
+      { bio, goals },
+      {
+        headers: { Authorization: `Bearer ${token}` },  // <-- add token
       }
-    } catch (error) {
-      toast.error('Error fetching data.', error.message);
-    }
-  };
+    );
 
-  const updatePersonalInfo = async () => {
-    try {
-      const { data } = await axios.put(`${backendUrl}/api/user/personal-info`, { bio, goals });
-      if (data.success) {
-        toast.success('Personal info updated!');
-        getUserData();
-        setShowPersonalInfoForm(false);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error('Error updating personal info.', error.message);
+    if (data.success) {
+      toast.success('Personal info updated!');
+      getUserData(token);  // refresh context data
+      setShowPersonalInfoForm(false);
+    } else {
+      toast.error(data.message);
     }
-  };
+  } catch (error) {
+    toast.error('Error updating personal info: ' + error.message);
+  }
+};
 
-  const addSkill = async () => {
-    if (!newSkill.name || !newSkill.proficiency || !newSkill.hoursSpent) {
-      return toast.warn('Fill all skill fields.');
-    }
 
-    try {
-      const { data } = await axios.post(`${backendUrl}/api/skill/add`, newSkill);
-      if (data.success) {
-        toast.success('Skill added!');
-        setNewSkill({ name: '', proficiency: '', hoursSpent: '' });
-        fetchData();
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error('Error adding skill.', error.message);
-    }
-  };
+const addSkill = async () => {
+  if (!newSkill.name || !newSkill.proficiency || !newSkill.hoursSpent) {
+    return toast.warn('Fill all skill fields.');
+  }
 
-  const deleteSkill = async (id) => {
-    try {
-      const { data } = await axios.delete(`${backendUrl}/api/skill/delete/${id}`);
-      if (data.success) {
-        toast.success('Skill deleted!');
-        fetchData();
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error('Error deleting skill.', error.message);
-    }
-  };
+  const token = localStorage.getItem("token");
+  if (!token) return toast.error("You are not logged in");
 
-  const updateSkill = async (id) => {
-    if (!editSkillData.name || !editSkillData.proficiency || !editSkillData.hoursSpent) {
-      return toast.warn('Fill all skill fields.');
-    }
+  try {
+    const { data } = await axios.post(
+      `${backendUrl}/api/skill/add`,
+      newSkill,
+      { headers: { Authorization: `Bearer ${token}` } } // <-- token
+    );
 
-    try {
-      const { data } = await axios.put(`${backendUrl}/api/skill/update/${id}`, editSkillData);
-      if (data.success) {
-        toast.success('Skill updated!');
-        setEditingSkill(null);
-        setEditSkillData({ name: '', proficiency: '', hoursSpent: '' });
-        fetchData();
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error('Error updating skill.', error.message);
+    if (data.success) {
+      toast.success('Skill added!');
+      setNewSkill({ name: '', proficiency: '', hoursSpent: '' });
+      fetchData(); // refresh dashboard
+    } else {
+      toast.error(data.message);
     }
-  };
+  } catch (error) {
+    toast.error('Error adding skill: ' + error.message);
+  }
+};
+
+const deleteSkill = async (id) => {
+  const token = localStorage.getItem("token");
+  if (!token) return toast.error("You are not logged in");
+
+  try {
+    const { data } = await axios.delete(
+      `${backendUrl}/api/skill/delete/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } } // <-- token
+    );
+
+    if (data.success) {
+      toast.success('Skill deleted!');
+      fetchData(); // refresh dashboard
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    toast.error('Error deleting skill: ' + error.message);
+  }
+};
+
+const updateSkill = async (id) => {
+  if (!editSkillData.name || !editSkillData.proficiency || !editSkillData.hoursSpent) {
+    return toast.warn('Fill all skill fields.');
+  }
+
+  const token = localStorage.getItem("token");
+  if (!token) return toast.error("You are not logged in");
+
+  try {
+    const { data } = await axios.put(
+      `${backendUrl}/api/skill/update/${id}`,
+      editSkillData,
+      { headers: { Authorization: `Bearer ${token}` } } // <-- token
+    );
+
+    if (data.success) {
+      toast.success('Skill updated!');
+      setEditingSkill(null);
+      setEditSkillData({ name: '', proficiency: '', hoursSpent: '' });
+      fetchData(); // refresh dashboard
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    toast.error('Error updating skill: ' + error.message);
+  }
+};
+
 
   const startEditingSkill = (skill) => {
     setEditingSkill(skill._id);

@@ -16,12 +16,12 @@ export const AppContextProvider = (props) => {
     if (!token) {
       setIsLoggedin(false);
       setUserData(false);
-      return;
+      return; // ⛔ Stop here — don’t hit backend without a token
     }
 
     try {
       const { data } = await axios.post(
-        backendUrl + '/api/auth/is-auth',
+        backendUrl + "/api/auth/is-auth",
         {},
         {
           headers: {
@@ -45,7 +45,7 @@ export const AppContextProvider = (props) => {
     const token = tokenParam || localStorage.getItem("token");
 
     try {
-      const { data } = await axios.get(backendUrl + '/api/user/data', {
+      const { data } = await axios.get(backendUrl + "/api/user/data", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -59,8 +59,10 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  // ✅ Only check auth if token already exists
   useEffect(() => {
-    getAuthState();
+    const token = localStorage.getItem("token");
+    if (token) getAuthState();
   }, []);
 
   const value = {
