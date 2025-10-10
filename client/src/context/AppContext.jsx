@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 export const AppContext = createContext();
 
+// updated
 export const AppContextProvider = (props) => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -45,12 +46,11 @@ export const AppContextProvider = (props) => {
     const token = tokenParam || localStorage.getItem("token");
 
     try {
-      const { data } = await axios.get(backendUrl + "/api/user/data", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+      const { data } = await axios.get(`${backendUrl}/api/user/data`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
       data.success
         ? setUserData(data.userData)
         : toast.error(data.message);
