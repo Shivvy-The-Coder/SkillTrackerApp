@@ -14,34 +14,38 @@
 // // ✅ Connect to MongoDB
 // connectDB().catch((err) => console.error("DB Connection Error:", err));
 
-// // Allowed frontend origins
+// // ✅ Allowed frontend origins (Add your real frontend + backend URLs)
 // const allowedOrigins = [
-//   "http://localhost:5173", // Vite dev server
-//   "https://skilltrackerapp-1.onrender.com", // deployed frontend
+//   "http://localhost:5173", // local Vite frontend
+//   "https://skilltrackerapp-1.onrender.com", // your deployed frontend
+//   "https://skilltrackerapp-visb.onrender.com", // your deployed backend (Render backend)
 // ];
 
-// // ✅ Middleware
+// // ✅ CORS Middleware
 // app.use(
 //   cors({
 //     origin: function (origin, callback) {
-//       // allow requests with no origin (curl, mobile apps)
+//       // allow requests with no origin (mobile apps, curl)
 //       if (!origin) return callback(null, true);
+
 //       if (!allowedOrigins.includes(origin)) {
 //         const msg = `CORS blocked for origin: ${origin}`;
 //         return callback(new Error(msg), false);
 //       }
+
 //       return callback(null, true);
 //     },
 //     credentials: true,
 //   })
 // );
 
+// // ✅ Body & Cookie Parsers
 // app.use(express.json());
 // app.use(cookieParser());
 
 // // ✅ Routes
 // app.get("/api/health", (req, res) => {
-//   res.json({ success: true, message: "Server is running" });
+//   res.json({ success: true, message: "Server is running fine 🚀" });
 // });
 
 // app.use("/api/auth", authRouter);
@@ -50,14 +54,17 @@
 
 // // ✅ Serve frontend in production
 // const __dirname = path.resolve();
+
 // if (process.env.NODE_ENV === "production") {
-//   const clientPath = path.join(__dirname, "../client/dist"); // Vite build folder
+//   const clientPath = path.join(__dirname, "../client/dist");
 //   app.use(express.static(clientPath));
+
+  
 // }
 
 // // ✅ Start server
 // app.listen(port, () => {
-//   console.log(`Server running on http://localhost:${port}`);
+//   console.log(`✅ Server running on http://localhost:${port}`);
 // });
 
 
@@ -77,18 +84,18 @@ const port = process.env.PORT || 4000;
 // ✅ Connect to MongoDB
 connectDB().catch((err) => console.error("DB Connection Error:", err));
 
-// ✅ Allowed frontend origins (Add your real frontend + backend URLs)
+// ✅ Allowed frontend origins
 const allowedOrigins = [
-  "http://localhost:5173", // local Vite frontend
-  "https://skilltrackerapp-1.onrender.com", // your deployed frontend
-  "https://skilltrackerapp-visb.onrender.com", // your deployed backend (Render backend)
+  "http://localhost:5173", // local frontend
+  "https://skilltrackerapp-1.onrender.com", // deployed frontend
+  "https://skilltrackerapp-visb.onrender.com", // deployed backend
 ];
 
 // ✅ CORS Middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (mobile apps, curl)
+      // allow requests with no origin (e.g., curl, mobile)
       if (!origin) return callback(null, true);
 
       if (!allowedOrigins.includes(origin)) {
@@ -106,7 +113,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Routes
+// ✅ API Routes
 app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Server is running fine 🚀" });
 });
@@ -120,11 +127,17 @@ const __dirname = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
   const clientPath = path.join(__dirname, "../client/dist");
+
+  // serve static files
   app.use(express.static(clientPath));
 
+  // handle React routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(clientPath, "index.html"));
+  });
 }
 
 // ✅ Start server
 app.listen(port, () => {
-  console.log(`✅ Server running on http://localhost:${port}`);
+  console.log(`✅ Server running on port ${port}`);
 });
