@@ -127,15 +127,17 @@ const __dirname = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
   const clientPath = path.join(__dirname, "../client/dist");
-
-  // serve static files
   app.use(express.static(clientPath));
 
-  // handle React routes
-  app.get("*", (req, res) => {
+  // ✅ Express 5–safe fallback route
+  app.use((req, res, next) => {
+    // skip API routes
+    if (req.originalUrl.startsWith("/api")) return next();
     res.sendFile(path.join(clientPath, "index.html"));
   });
 }
+
+
 
 // ✅ Start server
 app.listen(port, () => {
