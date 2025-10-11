@@ -165,28 +165,48 @@ export const getDashboardData = async (req, res) => {
   }
 };
 
-// ===========================
-// Update personal info
-// ===========================
+
 export const updatePersonalInfo = async (req, res) => {
   try {
     const userId = req.userId;
     const { bio, goals } = req.body;
 
+    // 1️⃣ Validate userId
     if (!userId) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
+      return res.status(401).json({ success: false, message: "Unauthorized: User ID missing" });
     }
 
-    // Update or create personal info
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ success: false, message: "Invalid User ID" });
+    }
+
+    // 2️⃣ Validate incoming data
+    if (typeof bio !== "string" || typeof goals !== "string") {
+      return res.status(400).json({ success: false, message: "Bio and Goals must be strings" });
+    }
+
+    console.log("➡️ Updating personal info for userId:", userId);
+    console.log("➡️ New bio:", bio);
+    console.log("➡️ New goals:", goals);
+
+    // 3️⃣ Find and update (or create if not exists)
     const personalInfo = await personalInfoModel.findOneAndUpdate(
-      { userId },           // filter
-      { bio, goals },       // update
-      { new: true, upsert: true } // return updated doc, create if not exists
+      { userId: mongoose.Types.ObjectId(userId) }, // ensure ObjectId type
+      { bio, goals },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
     );
 
-    res.json({ success: true, data: personalInfo });
+    if (!personalInfo) {
+      // This should rarely happen with upsert:true
+      return res.status(500).json({ success: false, message: "Failed to update personal info" });
+    }
+
+    console.log("✅ Personal info updated:", personalInfo);
+
+    return res.json({ success: true, data: personalInfo });
+
   } catch (err) {
     console.error("🔥 updatePersonalInfo error:", err);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    return res.status(500).json({ success: false, message: "Internal Server Error: " + err.message });
   }
 };
