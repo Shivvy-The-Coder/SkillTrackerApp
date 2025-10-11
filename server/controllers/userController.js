@@ -67,10 +67,10 @@ export const updatePersonalInfo = async (req, res) => {
 
     if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    const personalInfo = await PersonalInfo.findOneAndUpdate(
-      { userId },
-      { bio, goals },
-      { new: true, upsert: true } // 🔹 upsert: create if not exists
+    const personalInfo = await personalInfoModel.findOneAndUpdate(
+      { userId },           // filter
+      { bio, goals },       // update
+      { new: true, upsert: true } // options: return updated doc, create if not exists
     );
 
     res.json({ success: true, data: personalInfo });
