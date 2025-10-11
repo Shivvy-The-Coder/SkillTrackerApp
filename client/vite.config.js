@@ -13,7 +13,8 @@ export default defineConfig({
         'spin-slower': 'spin 15s linear infinite',
       },
   server: {
-    historyApiFallback: true
+    port: 5173,
+    historyApiFallback: true, // ensures SPA routing works in dev
   },
   build: {
     outDir: 'dist'

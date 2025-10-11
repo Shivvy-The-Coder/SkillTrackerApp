@@ -134,10 +134,17 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(clientPath));
 
   // Catch-all route for SPA (must be after API routes)
+  // app.use((req, res, next) => {
+  //   if (req.originalUrl.startsWith("/api")) return next(); // skip API
+  //   res.sendFile(path.join(clientPath, "index.html"));
+  // });
+
   app.use((req, res, next) => {
-    if (req.originalUrl.startsWith("/api")) return next(); // skip API
-    res.sendFile(path.join(clientPath, "index.html"));
-  });
+  if (req.originalUrl.startsWith("/api")) return next();
+  console.log(`Fallback triggered for: ${req.originalUrl}`);
+  res.sendFile(path.join(clientPath, "index.html"));
+});
+
 }
 
 // ✅ Start server
