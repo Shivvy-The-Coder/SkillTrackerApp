@@ -14,18 +14,18 @@
 // // ✅ Connect to MongoDB
 // connectDB().catch((err) => console.error("DB Connection Error:", err));
 
-// // ✅ Allowed frontend origins (Add your real frontend + backend URLs)
+// // ✅ Allowed frontend origins
 // const allowedOrigins = [
-//   "http://localhost:5173", // local Vite frontend
-//   "https://skilltrackerapp-1.onrender.com", // your deployed frontend
-//   "https://skilltrackerapp-visb.onrender.com", // your deployed backend (Render backend)
+//   "http://localhost:5173", // local frontend
+//   "https://skilltrackerapp-1.onrender.com", // deployed frontend
+//   "https://skilltrackerapp-visb.onrender.com", // deployed backend
 // ];
 
 // // ✅ CORS Middleware
 // app.use(
 //   cors({
 //     origin: function (origin, callback) {
-//       // allow requests with no origin (mobile apps, curl)
+//       // allow requests with no origin (e.g., curl, mobile)
 //       if (!origin) return callback(null, true);
 
 //       if (!allowedOrigins.includes(origin)) {
@@ -43,7 +43,7 @@
 // app.use(express.json());
 // app.use(cookieParser());
 
-// // ✅ Routes
+// // ✅ API Routes
 // app.get("/api/health", (req, res) => {
 //   res.json({ success: true, message: "Server is running fine 🚀" });
 // });
@@ -59,13 +59,22 @@
 //   const clientPath = path.join(__dirname, "../client/dist");
 //   app.use(express.static(clientPath));
 
-  
+//   // ✅ Express 5–safe fallback route
+//   app.use((req, res, next) => {
+//     // skip API routes
+//     if (req.originalUrl.startsWith("/api")) return next();
+//     res.sendFile(path.join(clientPath, "index.html"));
+//   });
 // }
+
+
 
 // // ✅ Start server
 // app.listen(port, () => {
-//   console.log(`✅ Server running on http://localhost:${port}`);
+//   console.log(`✅ Server running on port ${port}`);
 // });
+
+
 
 
 import express from "express";
@@ -86,60 +95,52 @@ connectDB().catch((err) => console.error("DB Connection Error:", err));
 
 // ✅ Allowed frontend origins
 const allowedOrigins = [
-  "http://localhost:5173", // local frontend
+  "http://localhost:5173", // Vite dev
   "https://skilltrackerapp-1.onrender.com", // deployed frontend
-  "https://skilltrackerapp-visb.onrender.com", // deployed backend
 ];
 
-// ✅ CORS Middleware
+// ✅ CORS middleware
 app.use(
   cors({
     origin: function (origin, callback) {
-      // allow requests with no origin (e.g., curl, mobile)
-      if (!origin) return callback(null, true);
-
+      if (!origin) return callback(null, true); // allow curl, mobile apps
       if (!allowedOrigins.includes(origin)) {
-        const msg = `CORS blocked for origin: ${origin}`;
-        return callback(new Error(msg), false);
+        return callback(new Error(`CORS blocked for origin: ${origin}`), false);
       }
-
       return callback(null, true);
     },
     credentials: true,
   })
 );
 
-// ✅ Body & Cookie Parsers
+// ✅ Body & cookie parsers
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ API Routes
+// ✅ Health check
 app.get("/api/health", (req, res) => {
-  res.json({ success: true, message: "Server is running fine 🚀" });
+  res.json({ success: true, message: "Server is running 🚀" });
 });
 
+// ✅ API routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/skill", skillRouter);
 
 // ✅ Serve frontend in production
 const __dirname = path.resolve();
-
 if (process.env.NODE_ENV === "production") {
-  const clientPath = path.join(__dirname, "../client/dist");
+  const clientPath = path.join(__dirname, "../client/dist"); // Vite build folder
   app.use(express.static(clientPath));
 
-  // ✅ Express 5–safe fallback route
+  // Catch-all route for SPA (must be after API routes)
   app.use((req, res, next) => {
-    // skip API routes
-    if (req.originalUrl.startsWith("/api")) return next();
+    if (req.originalUrl.startsWith("/api")) return next(); // skip API
     res.sendFile(path.join(clientPath, "index.html"));
   });
 }
 
-
-
 // ✅ Start server
 app.listen(port, () => {
-  console.log(`✅ Server running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
