@@ -17,10 +17,9 @@ export const addSkill = async (req, res) => {
   }
 };
 
-// Update an existing skill
 export const updateSkill = async (req, res) => {
-  console.log("Update Skill Payload:", req.body);  // Log incoming data
-  const { skillId, name, proficiency, hoursSpent } = req.body;
+  const skillId = req.params.id; // <-- get ID from URL
+  const { name, proficiency, hoursSpent } = req.body;
 
   const updateFields = {};
   if (name !== undefined) updateFields.name = name;
@@ -34,11 +33,18 @@ export const updateSkill = async (req, res) => {
       { new: true }
     );
 
+    if (!updatedSkill) {
+      return res.status(404).json({ success: false, message: "Skill not found" });
+    }
+
     return res.json({ success: true, data: updatedSkill });
   } catch (err) {
-    return res.json({ success: false, message: err.message });
+    return res.status(500).json({ success: false, message: err.message });
   }
 };
+
+
+
 
 // Delete a skill
 export const deleteSkill = async (req, res) => {
