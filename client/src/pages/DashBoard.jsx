@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaClock, FaTrophy, FaChartLine, FaBook, FaStar, FaFire } from "react-icons/fa";
 import { BiSolidEdit } from "react-icons/bi";
 import { MdDelete, MdCheckCircle } from "react-icons/md";
+// ;;
 
 const proficiencyLevels = [
   { value: 1, label: 'Novice', color: 'from-red-500 to-orange-500', badge: 'bg-red-500' },
