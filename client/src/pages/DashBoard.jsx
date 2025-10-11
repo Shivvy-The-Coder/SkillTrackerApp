@@ -44,7 +44,7 @@ const Dashboard = () => {
 };
 
 
- const updatePersonalInfo = async () => {
+const updatePersonalInfo = async () => {
   const token = localStorage.getItem("token");
   if (!token) return toast.error("You are not logged in");
 
@@ -52,20 +52,19 @@ const Dashboard = () => {
     const { data } = await axios.put(
       `${backendUrl}/api/user/personal-info`,
       { bio, goals },
-      {
-        headers: { Authorization: `Bearer ${token}` },  // <-- add token
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
     if (data.success) {
-      toast.success('Personal info updated!');
-      getUserData(token);  // refresh context data
+      toast.success("Personal info updated!");
       setShowPersonalInfoForm(false);
+      fetchData(); // ✅ reload bio/goals immediately
     } else {
       toast.error(data.message);
     }
   } catch (error) {
-    toast.error('Error updating personal info: ' + error.message);
+    console.error("Error updating personal info:", error);
+    toast.error("Error updating personal info: " + error.message);
   }
 };
 

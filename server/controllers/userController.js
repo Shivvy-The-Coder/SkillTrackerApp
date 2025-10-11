@@ -63,30 +63,33 @@ export const getDashboardData = async (req, res) => {
 // Update personal info
 export const updatePersonalInfo = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.userId; // ✅ should come from auth middleware
     const { bio, goals } = req.body;
 
-    console.log("➡️ Incoming data:", { bio, goals });
-    console.log("📌 User ID from auth middleware:", userId);
-
     if (!userId) {
-      return res.status(400).json({ success: false, message: "User ID not found in request" });
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    if (!bio && !goals) {
+      return res.status(400).json({ success: false, message: "Nothing to update" });
     }
 
     let personalInfo = await personalInfoModel.findOne({ userId });
 
     if (!personalInfo) {
+      // create new if doesn't exist
       personalInfo = new personalInfoModel({ userId, bio, goals });
     } else {
-      personalInfo.bio = bio;
-      personalInfo.goals = goals;
+      // update existing
+      if (bio !== undefined) personalInfo.bio = bio;
+      if (goals !== undefined) personalInfo.goals = goals;
     }
 
     await personalInfo.save();
 
     res.json({ success: true, data: personalInfo });
-  } catch (error) {
-    console.error("🔥 Error in updatePersonalInfo:", error);
+  } catch (err) {
+    console.error("Error in updatePersonalInfo:", err);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
