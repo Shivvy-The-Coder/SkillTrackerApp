@@ -5,7 +5,11 @@ import { addSkill, updateSkill, deleteSkill } from "../controllers/skillControll
 const skillRouter = express.Router();
 
 skillRouter.post('/add', userAuth, addSkill);
-skillRouter.put('/update', userAuth, updateSkill);
+skillRouter.put('/update/:id', userAuth, (req, res, next) => {
+  console.log("🔥 PUT /update/:id route triggered");
+  next();
+}, updateSkill);
+
 skillRouter.delete('/delete/:id', userAuth, deleteSkill);
 
 export default skillRouter;

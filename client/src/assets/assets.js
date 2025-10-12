@@ -5,6 +5,7 @@ import Logo from "./Logo.png"
 import person_icon from "./person_icon.svg"
 import mail_icon from "./mail_icon.svg"
 import header from "./header.png"
+import bg from "./dark-pattern.jpg"
 export const assets = {
     arrow_icon,
     lock_icon,
@@ -13,4 +14,5 @@ export const assets = {
     header,
     person_icon,
     mail_icon,
+    bg
 }

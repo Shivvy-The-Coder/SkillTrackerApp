@@ -7,6 +7,8 @@ import { FaStopwatch20 } from "react-icons/fa";
 import { HiMiniTrophy } from "react-icons/hi2";
 import { IoStatsChartSharp } from "react-icons/io5";
 import { FaCircleArrowLeft } from "react-icons/fa6";
+import { assets } from '../assets/assets.js';
+
 
 const Dashboard = () => {
   const { backendUrl, userData, getUserData } = useContext(AppContext);
@@ -65,6 +67,7 @@ const Dashboard = () => {
       toast.error(data.message);
     }
   } catch (error) {
+    console.log("error here")
     toast.error('Error updating personal info: ' + error.message);
   }
 };
@@ -167,19 +170,14 @@ const updateSkill = async (id) => {
   const topSkill = skills.reduce((max, skill) => parseInt(skill.hoursSpent || 0) > parseInt(max.hoursSpent || 0) ? skill : max, skills[0] || {});
 
   return (
-    <div className="min-h-screen bg-black">
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-14 right-4 w-12 h-12 bg-white  mix-blend-multiply filter blur-xl opacity-2=40 animate-bounce"></div>
-        <div className="absolute -bottom-0 -left-0 w-56 h-56 bg-white  mix-blend-multiply filter blur-md opacity-30 animate-bounce animation-delay-2000"></div>
-        <div className="absolute top-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-white  mix-blend-multiply filter blur-xl opacity-20 animate-bounce "></div>
-        <div className="absolute top-1 left-1 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-white  mix-blend-multiply filter blur-xl opacity-20 animate-bounce "></div>
-        <div className="absolute bottom-1 right-1 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-white  mix-blend-multiply filter blur-xl opacity-20 animate-bounce "></div>
-        <div className="absolute -bottom-1/2 right-1/3 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-white  mix-blend-multiply filter blur-xl opacity-20 animate-bounce "></div>
-      </div>
+    <div className="relative min-h-screen bg-black overflow-hidden">
+    {/* Background Image */}
+  <div
+        className="absolute inset-0 bg-cover bg-center opacity-10 backdrop-blur-2xl z-0"
+        style={{ backgroundImage: `url(${assets.bg})` }}
+      ></div>
 
-      {/* Header */}
-      <div className="relative z-10 bg-slate-800/60 backdrop-blur-lg shadow-xl border-b border-slate-700/50">
+      <div className="relative z-10 bg-slate-800/60 backdrop-blur-2xl shadow-xl border-b border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center space-x-6">

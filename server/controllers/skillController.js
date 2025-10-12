@@ -18,7 +18,12 @@ export const addSkill = async (req, res) => {
 };
 
 export const updateSkill = async (req, res) => {
-  const skillId = req.params.id; // <-- get ID from URL
+  console.log("🔥 updateSkill called");
+  console.log("req.userId:", req.userId);
+  console.log("req.params.id:", req.params.id);
+  console.log("req.body:", req.body);
+
+  const skillId = req.params.id;
   const { name, proficiency, hoursSpent } = req.body;
 
   const updateFields = {};
@@ -39,9 +44,13 @@ export const updateSkill = async (req, res) => {
 
     return res.json({ success: true, data: updatedSkill });
   } catch (err) {
+    console.error("🔥 updateSkill error:", err);
     return res.status(500).json({ success: false, message: err.message });
   }
 };
+
+
+
 
 
 
