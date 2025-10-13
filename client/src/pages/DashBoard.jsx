@@ -33,6 +33,7 @@ const Dashboard = () => {
       const { data } = await axios.get(`${backendUrl}/api/user/data`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      
       if (data.success) {
         setBio(data.userData.bio || "");
         setGoals(data.userData.goals || "");
@@ -45,7 +46,7 @@ const Dashboard = () => {
         );
       }
     } catch (error) {
-      toast.error("Error fetching data");
+      toast.error("Error fetching data",error);
     }
   };
 
@@ -145,7 +146,7 @@ const Dashboard = () => {
         className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between"
       >
         <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 rounded-lg bg-[#2A2A3C] flex items-center justify-center text-lg font-semibold text-white">
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center text-lg font-semibold text-white">
             {userData?.name?.charAt(0) || "U"}
           </div>
           <div>
@@ -394,5 +395,4 @@ const Dashboard = () => {
     </div>
   );
 };
-
 export default Dashboard;
