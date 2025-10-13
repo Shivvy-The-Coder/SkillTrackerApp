@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -5,6 +7,11 @@ import { motion } from "framer-motion";
 import { AppContext } from "../context/AppContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { FaCircleArrowLeft } from "react-icons/fa6";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
+} from "recharts";
+
 
 const proficiencyLabels = {
   1: "Beginner",
@@ -177,6 +184,36 @@ const Dashboard = () => {
     {}
   );
 
+
+const chartData = skills.map((s) => ({
+  name: s.name,
+  hours: s.hoursSpent,
+}));
+
+const COLORS = ["#7C3AED", "#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
+
+const [socialLinks, setSocialLinks] = useState({
+  github: "",
+  linkedin: "",
+  leetcode: "",
+  portfolio: "",
+});
+
+const handleLinkClick = (key) => {
+  if (socialLinks[key]) {
+    window.open(socialLinks[key], "_blank");
+  } else {
+    const link = prompt(`Enter your ${key} URL:`);
+    if (link && link.trim() !== "") {
+      setSocialLinks((prev) => ({ ...prev, [key]: link }));
+    } else {
+      alert(`${key} account not linked.`);
+    }
+  }
+};
+
+
+
   return (
     <div className="min-h-screen bg-[#1E1E2E] text-gray-200">
       {/* Header */}
@@ -225,6 +262,61 @@ const Dashboard = () => {
               </motion.div>
             ))}
         </motion.div>
+
+
+                    {/* Charts Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        >
+          {/* Bar Chart: Hours per Skill */}
+          <div className="bg-[#2A2A3C] border border-gray-700 rounded-lg p-5">
+            <h3 className="text-lg font-medium text-white mb-3">Skill Hours Overview</h3>
+            {skills.length === 0 ? (
+              <div className="text-gray-500 text-center py-8">No data available</div>
+            ) : (
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={chartData}>
+                  <XAxis dataKey="name" stroke="#ccc" />
+                  <YAxis stroke="#ccc" />
+                  <Tooltip />
+                  <Bar dataKey="hours" fill="#7C3AED" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+            {/* Pie Chart: Top 5 Skills Distribution */}
+            <div className="bg-[#2A2A3C] border border-gray-700 rounded-lg p-5">
+              <h3 className="text-lg font-medium text-white mb-3">Top 5 Skills by Hours</h3>
+              {skills.length === 0 ? (
+                <div className="text-gray-500 text-center py-8">No data available</div>
+              ) : (
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={chartData.sort((a, b) => b.hours - a.hours).slice(0, 5)}
+                      dataKey="hours"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={90}
+                      label
+                    >
+                      {chartData.slice(0, 5).map((_, index) => (
+                        <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </motion.div>
+
 
         {/* Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -287,6 +379,7 @@ const Dashboard = () => {
                 <div className="text-gray-500 text-sm">No skills yet</div>
               )}
             </div>
+            
           </motion.div>
 
           {/* Skills */}
@@ -358,8 +451,8 @@ const Dashboard = () => {
               {skills.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">No skills added yet</div>
               ) : (
-                <div className="space-y-3">
-                  {skills.map((skill) => (
+                  <div className="space-y-3 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
+                    {skills.map((skill) => (
                     <motion.div
                       whileHover={{ scale: 1.02 }}
                       key={skill._id}

@@ -16,17 +16,19 @@ const Header = () => {
   return (
     <div className='flex flex-col items-center mt-20 px-4 text-center text-gray-300'
     >
-       <div className='flex justify-center rounded-full '>
-         <img src={assets.header} alt=""
-             className='w-sm h-sm sm:w-[80%]   mb-6' />
-       </div>
+       
         <h1 className='flex items-center gap-2 text-xl sm:text-3xl font-medium mb-2 '>
                       Hey {userData?userData.name : 'Scholar'}  
                 <img className='w-8 aspect-square' 
                  src={assets.hand_wave} alt="" />
         </h1>
+
         <h2 className='text-3xl sm:text-5xl font-semibold mb-4 '
         >Welcome to SkillTracker App</h2>
+                <div className='flex justify-center rounded-full '>
+         <img src={assets.header} alt=""
+             className='w-sm h-sm sm:w-[80%]   mb-6' />
+       </div>
         <p className='mb-8 max-w-md  '>Welcome to SkillTracker! Track, improve, and master your personal skills one step at a time.</p>
 
         {
