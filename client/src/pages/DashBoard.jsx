@@ -215,7 +215,26 @@ const handleLinkClick = (key) => {
 
 
   return (
-    <div className="min-h-screen bg-[#1E1E2E] text-gray-200">
+    <div className=" relative min-h-screen bg-[#1E1E2E] text-gray-200">
+
+
+            
+      {/* Subtle background elements */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-20 right-1 w-96 h-96 bg-white/10  filter blur-xl animate-pulse"></div>
+        <div className="absolute bottom-20 left-1/4 w-96 h-96 bg-white/10  filter blur-xl animate-pulse"></div>
+        <div className="absolute top-1/2 left-1 transform -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] bg-white/10  filter blur-xl animate-pulse"></div>
+      </div>
+
+      {/* Grain texture */}
+      <div className="fixed inset-0 opacity-[0.015] pointer-events-none z-0" 
+           style={{
+             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+           }}>
+      </div>
+
+
+
       {/* Header */}
       <motion.div
         initial={{ y: -20, opacity: 0 }}

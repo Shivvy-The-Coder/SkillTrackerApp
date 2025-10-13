@@ -14,8 +14,7 @@ const Header = () => {
   };
 
   return (
-    <div className='flex flex-col items-center mt-20 px-4 text-center text-gray-300'
-    >
+    <div className='flex flex-col items-center sm:mt-37 mt-25 px-4 text-center text-gray-300'>
        
         <h1 className='flex items-center gap-2 text-xl sm:text-3xl font-medium mb-2 '>
                       Hey {userData?userData.name : 'Scholar'}  
@@ -27,13 +26,13 @@ const Header = () => {
         >Welcome to SkillTracker App</h2>
                 <div className='flex justify-center rounded-full '>
          <img src={assets.header} alt=""
-             className='w-sm h-sm sm:w-[80%]   mb-6' />
+             className='w-[70%] sm:w-[80%]   mb-6' />
        </div>
         <p className='mb-8 max-w-md  '>Welcome to SkillTracker! Track, improve, and master your personal skills one step at a time.</p>
 
         {
           isLoggedin?(<button   onClick={handleGetStarted}
-                 className='border border-gray-500 rounded-full px-8 py-2.5 text-gray-400  hover:bg-gray-100'>Get Started</button>):('')
+                 className='border border-gray-500 rounded-full px-8 py-2.5 text-gray-400  hover:bg-gray-100 cursor-pointer'>Get Started</button>):('')
         }
 
         

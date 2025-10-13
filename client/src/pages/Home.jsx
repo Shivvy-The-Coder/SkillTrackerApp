@@ -72,7 +72,7 @@ const Home = () => {
       {/* Content */}
       <div className="relative z-10 w-full">
         <Navbar />
-        <Header />
+        <Header/>
 
         {/* Features Section */}
         <section className="max-w-7xl mx-auto px-8 py-20">
@@ -184,7 +184,7 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
               onClick={()=>{navigate("/login")}}
-              className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg text-white font-semibold hover:opacity-90 transition">
+              className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-500 rounded-lg text-white font-semibold hover:opacity-90 transition cursor-pointer">
                 Get Started Free
               </button>
             </div>
