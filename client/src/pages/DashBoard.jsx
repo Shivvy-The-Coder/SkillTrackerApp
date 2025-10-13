@@ -45,7 +45,7 @@ const Dashboard = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // Fetch user data
+  // Fetch user dataa
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
