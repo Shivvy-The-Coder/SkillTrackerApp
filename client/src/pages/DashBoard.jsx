@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
@@ -14,6 +14,23 @@ const proficiencyLabels = {
   5: "Expert",
 };
 
+// Full list of skills for dropdown
+const allSkillsList = [
+  "C","C++","Java","Python","Python3","C#","JavaScript","TypeScript","Ruby","Swift","Go","Scala","Kotlin","Rust","PHP","R","Dart",
+  "Bash","Shell Script","PowerShell",
+  "MySQL","PostgreSQL","MongoDB","SQLite","Oracle SQL","Microsoft SQL Server","Firebase","Cassandra","Redis","Neo4j",
+  "HTML","CSS","Tailwind CSS","Bootstrap","React.js","Next.js","Angular","Vue.js","Node.js","Express.js","jQuery",
+  "Django","Flask","Spring Boot","ASP.NET","Laravel","FastAPI","GraphQL",
+  "Windows","Linux","Ubuntu","macOS",
+  "NumPy","Pandas","Matplotlib","Scikit-learn","TensorFlow","Keras","PyTorch","OpenCV","Seaborn","NLTK","SpaCy","Statsmodels","Excel",
+  "AWS","Azure","Google Cloud Platform (GCP)","Docker","Kubernetes","Jenkins","GitHub Actions","CI/CD","Terraform",
+  "Git","GitHub","GitLab","Bitbucket",
+  "Microsoft Excel","Microsoft PowerPoint","Microsoft Word","Google Sheets","Google Docs","Visual Studio Code","IntelliJ IDEA","Eclipse","Postman","Figma","Jira","Notion","Slack",
+  "Jest","Mocha","Cypress","Selenium","PyTest","JUnit",
+  "Tableau","Power BI","Google Data Studio","Excel Charts","Matplotlib","Plotly",
+  "Linux Commands","API Integration","REST APIs","JSON / XML","WebSocket","OAuth 2.0 / JWT Authentication","Data Structures & Algorithms","System Design","Networking Basics"
+];
+
 const Dashboard = () => {
   const { backendUrl, userData, getUserData } = useContext(AppContext);
   const [bio, setBio] = useState("");
@@ -23,8 +40,12 @@ const Dashboard = () => {
   const [newSkill, setNewSkill] = useState({ name: "", proficiency: 1, hoursSpent: "" });
   const [editingSkill, setEditingSkill] = useState(null);
   const [editSkillData, setEditSkillData] = useState({ name: "", proficiency: 1, hoursSpent: "" });
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
+  // Fetch user data
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -46,10 +67,30 @@ const Dashboard = () => {
         );
       }
     } catch (error) {
-      toast.error("Error fetching data",error);
+      toast.error("Error fetching data", error);
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredSkills = allSkillsList.filter(
+    s => s.toLowerCase().includes(searchTerm.toLowerCase()) && !skills.some(sk => sk.name === s)
+  );
+
+  // Personal info update
   const updatePersonalInfo = async () => {
     const token = localStorage.getItem("token");
     if (!token) return toast.error("You are not logged in");
@@ -70,6 +111,7 @@ const Dashboard = () => {
     }
   };
 
+  // Add skill
   const addSkill = async () => {
     if (!newSkill.name || newSkill.hoursSpent === "") return toast.warn("Please fill all fields");
     const token = localStorage.getItem("token");
@@ -83,6 +125,7 @@ const Dashboard = () => {
       if (data.success) {
         toast.success("Skill added!");
         setNewSkill({ name: "", proficiency: 1, hoursSpent: "" });
+        setSearchTerm("");
         fetchData();
       }
     } catch {
@@ -90,6 +133,7 @@ const Dashboard = () => {
     }
   };
 
+  // Delete skill
   const deleteSkill = async (id) => {
     const token = localStorage.getItem("token");
     if (!token) return toast.error("You are not logged in");
@@ -106,6 +150,7 @@ const Dashboard = () => {
     }
   };
 
+  // Update skill
   const updateSkill = async (id) => {
     const token = localStorage.getItem("token");
     if (!token) return toast.error("You are not logged in");
@@ -124,10 +169,6 @@ const Dashboard = () => {
       toast.error("Error updating skill");
     }
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const totalHours = skills.reduce((a, b) => a + b.hoursSpent, 0);
   const avgHours = skills.length > 0 ? Math.round(totalHours / skills.length) : 0;
@@ -258,25 +299,41 @@ const Dashboard = () => {
             {/* Add Skill */}
             <div className="bg-[#2A2A3C] border border-gray-700 rounded-lg p-5">
               <h3 className="text-lg font-medium text-white mb-4">Add New Skill</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <input
-                  type="text"
-                  placeholder="Skill Name"
-                  value={newSkill.name}
-                  onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
-                  className="p-2 rounded-md bg-[#1E1E2E] border border-gray-600 text-gray-200"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3" ref={dropdownRef}>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search Skill..."
+                    value={searchTerm}
+                    onChange={(e) => { setSearchTerm(e.target.value); setDropdownOpen(true); }}
+                    onFocus={() => setDropdownOpen(true)}
+                    className="p-2 rounded-md bg-[#1E1E2E] border border-gray-600 text-gray-200 w-full"
+                  />
+                  {dropdownOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-[#1E1E2E] border border-gray-600 rounded-md max-h-60 overflow-y-auto">
+                      {filteredSkills.length === 0 ? (
+                        <div className="p-2 text-gray-400">No matching skills</div>
+                      ) : (
+                        filteredSkills.map(skill => (
+                          <div
+                            key={skill}
+                            className="p-2 cursor-pointer hover:bg-gray-700 text-white"
+                            onClick={() => { setNewSkill({ ...newSkill, name: skill }); setSearchTerm(skill); setDropdownOpen(false); }}
+                          >
+                            {skill}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  )}
+                </div>
                 <select
                   value={newSkill.proficiency}
-                  onChange={(e) =>
-                    setNewSkill({ ...newSkill, proficiency: Number(e.target.value) })
-                  }
+                  onChange={(e) => setNewSkill({ ...newSkill, proficiency: Number(e.target.value) })}
                   className="p-2 rounded-md bg-[#1E1E2E] border border-gray-600 text-gray-200"
                 >
                   {Object.entries(proficiencyLabels).map(([val, label]) => (
-                    <option key={val} value={val}>
-                      {val} — {label}
-                    </option>
+                    <option key={val} value={val}>{val} — {label}</option>
                   ))}
                 </select>
                 <input
@@ -365,19 +422,23 @@ const Dashboard = () => {
                               {proficiencyLabels[skill.proficiency]} • {skill.hoursSpent}h
                             </div>
                           </div>
-                          <div className="flex gap-3">
+                          <div className="flex gap-2">
                             <button
                               onClick={() => {
                                 setEditingSkill(skill._id);
-                                setEditSkillData(skill);
+                                setEditSkillData({
+                                  name: skill.name,
+                                  proficiency: skill.proficiency,
+                                  hoursSpent: skill.hoursSpent,
+                                });
                               }}
-                              className="text-sm text-blue-400 hover:underline"
+                              className="px-3 py-1 bg-blue-600 text-white rounded-md text-sm"
                             >
                               Edit
                             </button>
                             <button
                               onClick={() => deleteSkill(skill._id)}
-                              className="text-sm text-red-400 hover:underline"
+                              className="px-3 py-1 bg-red-600 text-white rounded-md text-sm"
                             >
                               Delete
                             </button>
@@ -395,4 +456,5 @@ const Dashboard = () => {
     </div>
   );
 };
+
 export default Dashboard;
