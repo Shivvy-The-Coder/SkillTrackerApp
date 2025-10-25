@@ -14,7 +14,6 @@ export const register = async (req, res) => {
     if (existingUser) {
       return res.json({ success: false, message: "User already exists" });
     }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new userModel({ name, email, password: hashedPassword });
     await user.save();
@@ -56,14 +55,18 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    return res.json({ success: true, token });
+    return res.json({
+      success: true,
+      message: "User registered successfully",
+      token
+    });
   } catch (err) {
     return res.json({ success: false, message: "Error occurred while logging in" });
   }
 };
 
 export const logout = async (req, res) => {
-  return res.json({ success: true, message: "Logged out (client should delete token)" });
+  return res.json({ success: true, message: "Logged out" });
 };
 
 export const sendVerifyOtp = async (req, res) => {
