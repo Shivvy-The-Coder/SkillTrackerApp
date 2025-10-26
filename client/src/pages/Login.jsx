@@ -148,7 +148,6 @@
 
 
 import React, { useContext, useState } from 'react';
-import Navbar from '../components/Navbar';
 import { assets } from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
@@ -166,6 +165,7 @@ const Login = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+
     try {
       const endpoint = state === 'Sign Up' ? '/api/auth/register' : '/api/auth/login';
       const payload = state === 'Sign Up' ? { name, email, password } : { email, password };
@@ -173,59 +173,35 @@ const Login = () => {
       const { data } = await axios.post(`${backendUrl}${endpoint}`, payload);
 
       if (data.success) {
-        // ✅ Save token and setup auth
-        localStorage.setItem('token', data.token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        // ✅ Save token and set auth header instantly
+        const token = data.token;
+        localStorage.setItem('token', token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
+        // ✅ Update context & fetch user before redirect
         setIsLoggedin(true);
-        getUserData();
+        await getUserData(token);
 
         toast.success(
           state === 'Sign Up'
-            ? 'Account created successfully! Redirecting...'
-            : 'Login successful! Redirecting...'
+            ? 'Account created successfully!'
+            : 'Logged in successfully!'
         );
 
-        // ✅ Give React time to update state/context before redirect
-        setTimeout(() => navigate('/'), 150);
+        // ✅ Instantly go to homepage
+        navigate('/');
       } else {
         toast.error(data.message);
-        delete axios.defaults.headers.common['Authorization'];
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Something went wrong');
-      delete axios.defaults.headers.common['Authorization'];
+      console.error('Auth Error:', error);
     }
   };
 
   return (
     <div className="relative flex items-center justify-center min-h-screen sm:px-0 bg-slate-950 overflow-hidden">
-      {/* 🎨 Animated Blurry Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-14 right-4 w-12 h-12 bg-white mix-blend-multiply filter blur-xl opacity-40 animate-bounce"></div>
-        <div
-          className="absolute -bottom-0 -left-0 w-56 h-56 bg-white mix-blend-multiply filter blur-md opacity-30 animate-bounce"
-          style={{ animationDelay: '2s' }}
-        ></div>
-        <div
-          className="absolute top-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-white mix-blend-multiply filter blur-xl opacity-20 animate-bounce"
-          style={{ animationDelay: '4s' }}
-        ></div>
-        <div
-          className="absolute top-1 left-1 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-white mix-blend-multiply filter blur-xl opacity-20 animate-bounce"
-          style={{ animationDelay: '6s' }}
-        ></div>
-        <div
-          className="absolute bottom-1 right-1 transform -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-white mix-blend-multiply filter blur-xl opacity-20 animate-bounce"
-          style={{ animationDelay: '6s' }}
-        ></div>
-        <div
-          className="absolute -bottom-1/2 right-1/3 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-white mix-blend-multiply filter blur-xl opacity-20 animate-bounce"
-          style={{ animationDelay: '6s' }}
-        ></div>
-      </div>
-
-      {/* Logo */}
+      {/* Background & Logo same as before */}
       <img
         onClick={() => navigate('/')}
         src={assets.Logo}
@@ -233,15 +209,11 @@ const Login = () => {
         className="absolute left-5 sm:left-20 top-5 w-15 sm:w-15 cursor-pointer z-10"
       />
 
-      {/* Form Card */}
+      {/* Form */}
       <div className="z-10 bg-slate-900/80 backdrop-blur-md p-10 rounded-lg shadow-lg w-auto mx-2 sm:w-min text-indigo-400 text-sm">
         <h2 className="text-3xl font-semibold text-white text-center mb-3">
           {state === 'Sign Up' ? 'Create Account' : 'Login'}
         </h2>
-        <p className="text-center text-sm mb-6">
-          {state === 'Sign Up' ? 'Create Your Account' : 'Login to Your Account'}
-        </p>
-
         <form onSubmit={onSubmitHandler}>
           {state === 'Sign Up' && (
             <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
@@ -256,7 +228,6 @@ const Login = () => {
               />
             </div>
           )}
-
           <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
             <img src={assets.mail_icon} alt="" />
             <input
@@ -268,7 +239,6 @@ const Login = () => {
               className="bg-transparent outline-none text-gray-300"
             />
           </div>
-
           <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
             <img src={assets.lock_icon} alt="" />
             <input
