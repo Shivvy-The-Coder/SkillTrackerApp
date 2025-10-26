@@ -162,11 +162,10 @@ const Login = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // 🌀 for loading animation
+  const [loading, setLoading] = useState(false); // loader state
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
     try {
       const endpoint = state === 'Sign Up' ? '/api/auth/register' : '/api/auth/login';
       const payload = state === 'Sign Up' ? { name, email, password } : { email, password };
@@ -174,28 +173,23 @@ const Login = () => {
       const { data } = await axios.post(`${backendUrl}${endpoint}`, payload);
 
       if (data.success) {
-        // ✅ Save token and set auth header instantly
         const token = data.token;
         localStorage.setItem('token', token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-        // ✅ Start loading state
         toast.success(
           state === 'Sign Up'
-            ? 'Account created successfully! Redirecting...'
-            : 'Logged in successfully! Redirecting...'
+            ? 'Account created successfully!'
+            : 'Logged in successfully!'
         );
-        setLoading(true);
 
-        // ✅ Load user data and go to homepage
+        // show loader while fetching user data
+        setLoading(true);
         await getUserData(token);
         setIsLoggedin(true);
 
-        // Give spinner a small buffer before redirect
-        setTimeout(() => {
-          setLoading(false);
-          navigate('/');
-        }, 600);
+        // redirect to homepage
+        navigate('/');
       } else {
         toast.error(data.message);
       }
@@ -206,11 +200,11 @@ const Login = () => {
     }
   };
 
-  // 🌀 Simple loading spinner overlay
+  // 🔹 Full-screen loader
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-950 text-white">
-        <div className="w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin mb-4"></div>
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950">
+        <div className="w-20 h-20 border-8 border-t-purple-500 border-b-pink-500 border-l-purple-300 border-r-pink-300 rounded-full animate-spin mb-4"></div>
         <p className="text-lg text-gray-300">Preparing your dashboard...</p>
       </div>
     );
@@ -218,7 +212,7 @@ const Login = () => {
 
   return (
     <div className="relative flex items-center justify-center min-h-screen sm:px-0 bg-slate-950 overflow-hidden">
-      {/* Background Blurry Animation (same as before) */}
+      {/* Background Blurry Animation */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-14 right-4 w-12 h-12 bg-white mix-blend-multiply filter blur-xl opacity-40 animate-bounce"></div>
         <div className="absolute -bottom-0 -left-0 w-56 h-56 bg-white mix-blend-multiply filter blur-md opacity-30 animate-bounce" style={{ animationDelay: '2s' }}></div>
@@ -291,6 +285,7 @@ const Login = () => {
           )}
 
           <button
+            type="submit"
             disabled={loading}
             className="w-full py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white cursor-pointer font-medium disabled:opacity-50"
           >
