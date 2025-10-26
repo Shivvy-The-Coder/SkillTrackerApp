@@ -1,5 +1,4 @@
 // import React, { useContext, useState } from 'react';
-// import Navbar from '../components/Navbar';
 // import { assets } from '../assets/assets';
 // import { useNavigate } from 'react-router-dom';
 // import { AppContext } from '../context/AppContext';
@@ -14,6 +13,7 @@
 //   const [name, setName] = useState('');
 //   const [email, setEmail] = useState('');
 //   const [password, setPassword] = useState('');
+//   const [loading, setLoading] = useState(false); // loader state
 
 //   const onSubmitHandler = async (e) => {
 //     e.preventDefault();
@@ -21,27 +21,49 @@
 //       const endpoint = state === 'Sign Up' ? '/api/auth/register' : '/api/auth/login';
 //       const payload = state === 'Sign Up' ? { name, email, password } : { email, password };
 
-//       const { data } = await axios.post(backendUrl + endpoint, payload);
+//       const { data } = await axios.post(`${backendUrl}${endpoint}`, payload);
 
 //       if (data.success) {
-//         // Save token and set default Authorization header
-//         localStorage.setItem('token', data.token);
-//         axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+//         const token = data.token;
+//         localStorage.setItem('token', token);
+//         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
+//         toast.success(
+//           state === 'Sign Up'
+//             ? 'Account created successfully!'
+//             : 'Logged in successfully!'
+//         );
+
+//         // show loader while fetching user data
+//         setLoading(true);
+//         await getUserData(token);
 //         setIsLoggedin(true);
-//         getUserData();
+
+//         // redirect to homepage
 //         navigate('/');
 //       } else {
 //         toast.error(data.message);
 //       }
 //     } catch (error) {
-//       toast.error(error.response?.data?.message || error.message);
+//       setLoading(false);
+//       toast.error(error.response?.data?.message || 'Something went wrong');
+//       console.error('Auth Error:', error);
 //     }
 //   };
 
+//   // 🔹 Full-screen loader
+//   if (loading) {
+//     return (
+//       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950">
+//         <div className="w-20 h-20 border-8 border-t-purple-500 border-b-pink-500 border-l-purple-300 border-r-pink-300 rounded-full animate-spin mb-4"></div>
+//         <p className="text-lg text-gray-300">Preparing your dashboard...</p>
+//       </div>
+//     );
+//   }
+
 //   return (
 //     <div className="relative flex items-center justify-center min-h-screen sm:px-0 bg-slate-950 overflow-hidden">
-//       {/* 🎨 Animated Blurry Background */}
+//       {/* Background Blurry Animation */}
 //       <div className="fixed inset-0 pointer-events-none z-0">
 //         <div className="absolute top-14 right-4 w-12 h-12 bg-white mix-blend-multiply filter blur-xl opacity-40 animate-bounce"></div>
 //         <div className="absolute -bottom-0 -left-0 w-56 h-56 bg-white mix-blend-multiply filter blur-md opacity-30 animate-bounce" style={{ animationDelay: '2s' }}></div>
@@ -59,14 +81,11 @@
 //         className="absolute left-5 sm:left-20 top-5 w-15 sm:w-15 cursor-pointer z-10"
 //       />
 
-//       {/* Form Card */}
+//       {/* Form */}
 //       <div className="z-10 bg-slate-900/80 backdrop-blur-md p-10 rounded-lg shadow-lg w-auto mx-2 sm:w-min text-indigo-400 text-sm">
 //         <h2 className="text-3xl font-semibold text-white text-center mb-3">
 //           {state === 'Sign Up' ? 'Create Account' : 'Login'}
 //         </h2>
-//         <p className="text-center text-sm mb-6">
-//           {state === 'Sign Up' ? 'Create Your Account' : 'Login to Your Account'}
-//         </p>
 
 //         <form onSubmit={onSubmitHandler}>
 //           {state === 'Sign Up' && (
@@ -107,11 +126,20 @@
 //             />
 //           </div>
 
-//           <p onClick={() => navigate('/reset-password')} className="mb-4 text-indigo-500 cursor-pointer">
-//             Forgot password?
-//           </p>
+//           {state === 'Login' && (
+//             <p
+//               onClick={() => navigate('/reset-password')}
+//               className="mb-4 text-indigo-500 cursor-pointer"
+//             >
+//               Forgot password?
+//             </p>
+//           )}
 
-//           <button className="w-full py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white cursor-pointer font-medium">
+//           <button
+//             type="submit"
+//             disabled={loading}
+//             className="w-full py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white cursor-pointer font-medium disabled:opacity-50"
+//           >
 //             {state}
 //           </button>
 //         </form>
@@ -119,14 +147,20 @@
 //         {state === 'Sign Up' ? (
 //           <p className="text-gray-400 text-center text-xs mt-4">
 //             Already have an account?
-//             <span onClick={() => setState('Login')} className="pl-1 text-blue-400 cursor-pointer underline">
+//             <span
+//               onClick={() => setState('Login')}
+//               className="pl-1 text-blue-400 cursor-pointer underline"
+//             >
 //               Login here
 //             </span>
 //           </p>
 //         ) : (
 //           <p className="text-gray-400 text-center text-xs mt-4">
 //             Don't have an account?
-//             <span onClick={() => setState('Sign Up')} className="pl-1 text-blue-400 cursor-pointer underline">
+//             <span
+//               onClick={() => setState('Sign Up')}
+//               className="pl-1 text-blue-400 cursor-pointer underline"
+//             >
 //               Sign Up here
 //             </span>
 //           </p>
@@ -137,14 +171,6 @@
 // };
 
 // export default Login;
-
-
-
-
-
-
-
-
 
 
 import React, { useContext, useState } from 'react';
@@ -166,6 +192,10 @@ const Login = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    
+    // Start loading immediately when form is submitted
+    setLoading(true);
+    
     try {
       const endpoint = state === 'Sign Up' ? '/api/auth/register' : '/api/auth/login';
       const payload = state === 'Sign Up' ? { name, email, password } : { email, password };
@@ -183,29 +213,40 @@ const Login = () => {
             : 'Logged in successfully!'
         );
 
-        // show loader while fetching user data
-        setLoading(true);
+        // Fetch user data while loader is still showing
         await getUserData(token);
         setIsLoggedin(true);
 
-        // redirect to homepage
+        // redirect to homepage (loader will stay visible during navigation)
         navigate('/');
       } else {
+        // Stop loading on error
+        setLoading(false);
         toast.error(data.message);
       }
     } catch (error) {
+      // Stop loading on error
       setLoading(false);
       toast.error(error.response?.data?.message || 'Something went wrong');
       console.error('Auth Error:', error);
     }
   };
 
-  // 🔹 Full-screen loader
+  // 🔹 Full-screen loader overlay
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950">
-        <div className="w-20 h-20 border-8 border-t-purple-500 border-b-pink-500 border-l-purple-300 border-r-pink-300 rounded-full animate-spin mb-4"></div>
-        <p className="text-lg text-gray-300">Preparing your dashboard...</p>
+        {/* Animated spinner */}
+        <div className="relative">
+          <div className="w-20 h-20 border-8 border-t-purple-500 border-b-pink-500 border-l-purple-300 border-r-pink-300 rounded-full animate-spin"></div>
+          <div className="absolute inset-0 w-20 h-20 border-8 border-t-purple-400 border-b-pink-400 border-l-transparent border-r-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1s' }}></div>
+        </div>
+        
+        {/* Loading text with animation */}
+        <p className="text-lg text-gray-300 mt-6 animate-pulse">
+          {state === 'Sign Up' ? 'Creating your account...' : 'Logging you in...'}
+        </p>
+        <p className="text-sm text-gray-500 mt-2">Please wait</p>
       </div>
     );
   }
@@ -287,7 +328,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white cursor-pointer font-medium disabled:opacity-50"
+            className="w-full py-2.5 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
           >
             {state}
           </button>
