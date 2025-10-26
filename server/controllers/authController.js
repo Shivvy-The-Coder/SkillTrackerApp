@@ -78,7 +78,7 @@ export const sendVerifyOtp = async (req, res) => {
     const otp = String(Math.floor(100000 + Math.random() * 900000));
     user.verifyOtp = otp;
     user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000;
-
+    console.log(otp)
     await user.save();
 
     await transporter.sendMail({
@@ -140,6 +140,7 @@ export const sendResetOtp = async (req, res) => {
     const otp = String(Math.floor(100000 + Math.random() * 900000));
     user.resetOTP = otp;
     user.resetOtpExpireAt = Date.now() + 15 * 60 * 1000;
+    console.log(otp)
     await user.save();
 
     await transporter.sendMail({
